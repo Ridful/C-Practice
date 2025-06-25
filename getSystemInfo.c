@@ -17,7 +17,6 @@ int main() {
         printf("ComputerName: %s\n", computerName);
     }
 
-
     // Get Username
     TCHAR userName[UNLEN + 1];
     DWORD userSize = sizeof(userName) / sizeof(userName[0]);
@@ -25,14 +24,6 @@ int main() {
     if (GetUserName(userName, &userSize)) {
         printf("UserName: %s\n", userName);
     }
-
-    /*
-    WCHAR userGeoName[10];
-    DWORD userGeoNameSize = sizeof(userGeoName) / sizeof(WCHAR);
-    if (GetUserDefaultGeoName(userGeoName, userGeoNameSize)) {
-        printf("userGeoName: %s\n", userGeoName);
-    }*/
-
 
     //Get information about the processor
     SYSTEM_INFO sysInfo;
