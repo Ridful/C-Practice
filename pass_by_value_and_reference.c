@@ -1,5 +1,11 @@
 #include <stdio.h>
 
+/*
+Pass by value - When you don't want the function to change the original variable
+Pass by Reference - When you want the function to modify the original value
+
+Arrays in C are always passed by reference (as pointers to their first element), even if you don’t write &.
+*/
 
 // pass by value (just a copy)
 void modify2(int x) {
