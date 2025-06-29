@@ -1,5 +1,13 @@
 #include <stdio.h>
 
+/*
+fopen() opens file
+fprintf() write formatted text to file
+fscanf() read formatted input from a file
+fgets() read a line from a file
+fclose() close file
+*/
+
 int main() {
     FILE* fp;
     char* filename = "test.txt";
