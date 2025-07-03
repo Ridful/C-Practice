@@ -1,12 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-void readFromFile(char* filename) {
-    
-}
-
 void xor_encrypt_decrypt(char* input, char* output, char key) {
-    int len = sizeof(input);
+    int len = strlen(input);
 
     for (int i = 0; i < len; i++) {
         output[i] = input[i] ^ key;
@@ -16,46 +12,54 @@ void xor_encrypt_decrypt(char* input, char* output, char key) {
 
 }
 
+int read_from_file(char* filename, char* text, size_t text_size) {
+    FILE* fp = fopen(filename, "r");
+    if (fp == NULL){
+        printf("Error opening file\n");
+        return 1;
+    }
+
+    //Put line from file into variable 'text'
+    fgets(text, text_size, fp);
+
+    fclose(fp);
+    return 0;
+}
+
+int write_to_file(char* filename, char* text) {
+    FILE* fp = fopen(filename, "w");
+    if (fp == NULL) {
+        printf("Error opening file for writing\n");
+        return 1;
+    }
+
+    fprintf(fp, "%s", text);
+    fclose(fp);
+    return 0;
+}
 
 int main() {
-    FILE* fp;
-    
     char* filename = "test.txt";
 
     char text[100];
     char encrypted[100];
     char decrypted[100];
     char key = 'K';
-    //readFromFile(&filename);
 
-    fp = fopen(filename, "r");
-    if (fp == NULL){
-        printf("Error opening file");
+    //readFromFile(&filename);
+    if (read_from_file(filename, text, sizeof(text)) != 0) {
         return 1;
     }
-
-    //Put line from file into variable 'text'
-    fgets(text, sizeof(text), fp);
 
     printf("Plaintext from file: %s\n", text);
 
-    fclose(fp);
-
+    //Encrypt
     xor_encrypt_decrypt(text, encrypted, key);
     printf("XOR Encrypted string from file: %s\n", encrypted);
 
-    fp = fopen(filename, "w");
-    if (fp == NULL) {
-        printf("Error opening file");
-        return 1;
-    }
-
-    printf("Writing text to file: %s\n", encrypted);
-    fprintf(fp, text);
-
-    fclose(fp);
-
-
+    //Decrypt
+    xor_encrypt_decrypt(encrypted, decrypted, key);
+    printf("XOR Decrypted string: %s\n", decrypted);
 
     return 0;
 }
