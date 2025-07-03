@@ -61,5 +61,7 @@ int main() {
     xor_encrypt_decrypt(encrypted, decrypted, key);
     printf("XOR Decrypted string: %s\n", decrypted);
 
+    // TODO - write xor encrypted string back to file
+
     return 0;
 }
