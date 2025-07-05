@@ -65,7 +65,20 @@ int main() {
     if (write_to_file(filename, encrypted) != 0) {
         return 1;
     }
-    printf("Wrote XOR Encrypted to file\n:\"%s\"", encrypted);
+    printf("Wrote XOR Encrypted to file\n:\"%s\"\n", encrypted);
+
+    if (read_from_file(filename, encrypted, sizeof(encrypted)) != 0) {
+        return 1;
+    }
+    printf("Read from file XOR Encrypted: %s\n", encrypted);
+
+    xor_encrypt_decrypt(encrypted, decrypted, key);
+    printf("XOR Decrypted: %s from file.\n", decrypted);
+
+    if (write_to_file(filename, decrypted) != 0) {
+        return 1;
+    }
+    printf("Wrote XOR Decrypted back to file: %s\n", decrypted);
 
     return 0;
 }
