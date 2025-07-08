@@ -24,5 +24,13 @@ int main() {
     printf("%d\n", value);
     printf("%d\n", *vptr);
     printf("%d\n", **ptr_to_ptr);
+
+    int **matrix;
+    matrix = malloc(3 * sizeof(int)); // array of 3 int pointers
+
+    for (int i = 0; i < 3; i++) {
+        matrix[i] = malloc(4 * sizeof(int)); // each row has 4 ints
+    }
+
     return 0;
 }
