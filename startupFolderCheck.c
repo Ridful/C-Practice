@@ -17,10 +17,35 @@ int main() {
         printf("Failed to get startup folder path.\n");
     }
 
+    strcat(path, "\\");
+    printf("%s\n", path);
     BOOL isEmpty = PathIsDirectoryEmptyA(path);
     printf("Is startup folder empty? %s\n", isEmpty ? "Yes" : "No");
     
-    //todo - iterate through folder to get name of all files and directories in startup folder
+    if (isEmpty == FALSE) {
+        strcat(path, "*");
+        WIN32_FIND_DATA findFileData;
+        HANDLE hFind = INVALID_HANDLE_VALUE;
+
+        hFind = FindFirstFile(path, &findFileData);
+
+        if (hFind == INVALID_HANDLE_VALUE) {
+            printf("findFirstFile failed.\n");
+            return 1;
+        }
+        do {
+            if (strcmp(findFileData.cFileName, ".") != 0 && strcmp(findFileData.cFileName, "..") != 0) {
+                if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                    printf("Directory: %s\n", findFileData.cFileName);
+                } else {
+                    printf("File: %s\n", findFileData.cFileName);
+                }
+            }
+        } while (FindNextFile(hFind, &findFileData) != 0);
+
+        FindClose(hFind);
+    }
+    
 
     return 0;
 }
