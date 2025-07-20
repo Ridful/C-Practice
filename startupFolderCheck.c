@@ -43,6 +43,11 @@ int main() {
             }
         } while (FindNextFile(hFind, &findFileData) != 0);
 
+        DWORD dwError = GetLastError();
+        if (dwError != ERROR_NO_MORE_FILES) {
+            printf("FindNextFile failed (%lu)\n", dwError);
+        }
+
         FindClose(hFind);
     }
     
