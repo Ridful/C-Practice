@@ -8,7 +8,22 @@
 
 //gcc startupFolderCheck.c -o startupFolderCheck.exe -lshell32 -lshlwapi
 
+void printFolderPath(int csidl, const char* name) {
+    char path[MAX_PATH];
+    if (SHGetFolderPathA(NULL, csidl, NULL, 0, path) == S_OK) {
+        printf("%s: %s\n", name, path);
+    } else {
+        printf("Failed to get %s path.\n", name);
+    }
+}
+
 int main() {
+
+    printFolderPath(CSIDL_APPDATA, "AppData (Roaming)");
+    printFolderPath(CSIDL_COMMON_APPDATA, "ProgramData");
+    printFolderPath(CSIDL_PERSONAL, "Documents");
+    printFolderPath(CSIDL_DESKTOPDIRECTORY, "Desktop");
+
     char path[MAX_PATH];
 
     if (SHGetFolderPathA(NULL, CSIDL_STARTUP, NULL, 0, path) == S_OK) {
