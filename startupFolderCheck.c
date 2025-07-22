@@ -17,6 +17,37 @@ void printFolderPath(int csidl, const char* name) {
     }
 }
 
+void printFilesDirsInPath(char* startupPath) {
+
+    strcat(startupPath, "\\*");
+    printf("%s\n", startupPath);
+
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = INVALID_HANDLE_VALUE;
+
+    hFind = FindFirstFile(startupPath, &findFileData);
+
+    if (hFind == INVALID_HANDLE_VALUE) {
+        printf("findFirstFile failed.\n");
+    }
+    do {
+        if (strcmp(findFileData.cFileName, ".") != 0 && strcmp(findFileData.cFileName, "..") != 0) {
+            if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                printf("Directory: %s\n", findFileData.cFileName);
+            } else {
+                printf("File: %s\n", findFileData.cFileName);
+            }
+        }
+    } while (FindNextFile(hFind, &findFileData) != 0);
+
+    DWORD dwError = GetLastError();
+    if (dwError != ERROR_NO_MORE_FILES) {
+        printf("FindNextFile failed (%lu)\n", dwError);
+    }
+
+    FindClose(hFind);
+}
+
 int main() {
 
     printFolderPath(CSIDL_APPDATA, "AppData (Roaming)");
@@ -24,48 +55,22 @@ int main() {
     printFolderPath(CSIDL_PERSONAL, "Documents");
     printFolderPath(CSIDL_DESKTOPDIRECTORY, "Desktop");
 
-    char path[MAX_PATH];
+    char startupPath[MAX_PATH];
 
-    if (SHGetFolderPathA(NULL, CSIDL_STARTUP, NULL, 0, path) == S_OK) {
-        printf("Startup folder path: %s\n", path);
-    } else {
+    if (SHGetFolderPathA(NULL, CSIDL_STARTUP, NULL, 0, startupPath) == S_OK) {
+        printf("Startup folder path: %s\n", startupPath);
+
+        BOOL isEmpty = PathIsDirectoryEmptyA(startupPath);
+        printf("Is startup folder empty? %s\n", isEmpty ? "Yes" : "No");
+
+        if (!isEmpty) {
+            printFilesDirsInPath(startupPath);
+        }
+    }
+    
+    else {
         printf("Failed to get startup folder path.\n");
     }
-
-    strcat(path, "\\");
-    printf("%s\n", path);
-    BOOL isEmpty = PathIsDirectoryEmptyA(path);
-    printf("Is startup folder empty? %s\n", isEmpty ? "Yes" : "No");
-    
-    if (isEmpty == FALSE) {
-        strcat(path, "*");
-        WIN32_FIND_DATA findFileData;
-        HANDLE hFind = INVALID_HANDLE_VALUE;
-
-        hFind = FindFirstFile(path, &findFileData);
-
-        if (hFind == INVALID_HANDLE_VALUE) {
-            printf("findFirstFile failed.\n");
-            return 1;
-        }
-        do {
-            if (strcmp(findFileData.cFileName, ".") != 0 && strcmp(findFileData.cFileName, "..") != 0) {
-                if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-                    printf("Directory: %s\n", findFileData.cFileName);
-                } else {
-                    printf("File: %s\n", findFileData.cFileName);
-                }
-            }
-        } while (FindNextFile(hFind, &findFileData) != 0);
-
-        DWORD dwError = GetLastError();
-        if (dwError != ERROR_NO_MORE_FILES) {
-            printf("FindNextFile failed (%lu)\n", dwError);
-        }
-
-        FindClose(hFind);
-    }
-    
 
     return 0;
 }
