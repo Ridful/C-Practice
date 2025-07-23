@@ -8,6 +8,7 @@
 
 //gcc startupFolderCheck.c -o startupFolderCheck.exe -lshell32 -lshlwapi
 
+// Prints the full path for a common location
 void printFolderPath(int csidl, const char* name) {
     char path[MAX_PATH];
     if (SHGetFolderPathA(NULL, csidl, NULL, 0, path) == S_OK) {
@@ -17,6 +18,7 @@ void printFolderPath(int csidl, const char* name) {
     }
 }
 
+// Prints the files and directories inside of a directory
 void printFilesDirsInPath(char* startupPath) {
 
     strcat(startupPath, "\\*");
@@ -50,6 +52,7 @@ void printFilesDirsInPath(char* startupPath) {
 
 int main() {
 
+    // Print the paths for some common locations
     printFolderPath(CSIDL_APPDATA, "AppData (Roaming)");
     printFolderPath(CSIDL_COMMON_APPDATA, "ProgramData");
     printFolderPath(CSIDL_PERSONAL, "Documents");
@@ -57,12 +60,14 @@ int main() {
 
     char startupPath[MAX_PATH];
 
+    // Get the Startup folder location
     if (SHGetFolderPathA(NULL, CSIDL_STARTUP, NULL, 0, startupPath) == S_OK) {
         printf("Startup folder path: %s\n", startupPath);
 
         BOOL isEmpty = PathIsDirectoryEmptyA(startupPath);
         printf("Is startup folder empty? %s\n", isEmpty ? "Yes" : "No");
 
+        // If the startup folder isnt empty, print all files & dirs in startup folder
         if (!isEmpty) {
             printFilesDirsInPath(startupPath);
         }
