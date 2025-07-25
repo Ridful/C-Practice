@@ -5,6 +5,32 @@
 
 #define MAGIC_BYTES 8
 
+typedef struct {
+    const char *type;
+    const unsigned char *magic;
+    size_t length;
+} MagicPattern;
+
+MagicPattern patterns[] = {
+    {"JPEG image", (unsigned char *)"\xFF\xD8\xFF", 3},
+    {"PNG image", (unsigned char *)"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A", 8},
+    {"GIF image", (unsigned char *)"GIF89a", 6},
+    {"GIF image", (unsigned char *)"GIF87a", 6},
+    {"Windows EXE", (unsigned char *)"\x4D\x5A", 2},
+};
+
+size_t patternCount = sizeof(patterns) / sizeof(MagicPattern);
+
+const char* get_file_type(unsigned char *buffer, size_t bytesRead) {
+    for (size_t i = 0; i < patternCount; i++) {
+        if (bytesRead >= patterns[i].length &&
+            memcmp(buffer, patterns[i].magic, patterns[i].length) == 0) {
+            return patterns[i].type;
+        }
+    }
+    return "Unknown file type";
+}
+
 int main() {
 
     char filepath[1024];
@@ -42,8 +68,10 @@ int main() {
     }
     printf("\n");
 
-    // TODO - Add pattern matching for filetypes
-    // possibly compare file extension with observed magic number
+    const char *type = get_file_type(buffer, bytesRead);
+    printf("Detected file type: %s\n", type);
+
+    // todo - also check file extension?
 
     return 0;
 }
