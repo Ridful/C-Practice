@@ -21,6 +21,7 @@ MagicPattern patterns[] = {
 
 size_t patternCount = sizeof(patterns) / sizeof(MagicPattern);
 
+// Get the file type from magic bytes
 const char* get_file_type(unsigned char *buffer, size_t bytesRead) {
     for (size_t i = 0; i < patternCount; i++) {
         if (bytesRead >= patterns[i].length &&
@@ -29,6 +30,17 @@ const char* get_file_type(unsigned char *buffer, size_t bytesRead) {
         }
     }
     return "Unknown file type";
+}
+
+// Gets the file extension from user inputed filepath
+// returns pointer to after last occurance of dot
+const char* getFileExtension(const char *filepath) {
+    const char *dot = strrchr(filepath, '.'); // find last occurance of (.)
+
+    if (!dot || dot == filepath) {
+        return "";
+    }
+    return dot + 1; //returns pointer to after dot
 }
 
 int main() {
@@ -71,7 +83,13 @@ int main() {
     const char *type = get_file_type(buffer, bytesRead);
     printf("Detected file type: %s\n", type);
 
-    // todo - also check file extension?
-
+    //remove newline character from fgets
+    const char *ext = getFileExtension(filepath);
+    if (strlen(ext) == 0) {
+        printf("No file extension found.\n");
+    } else {
+        printf("File extension: %s\n", ext);
+    }
+    
     return 0;
 }
