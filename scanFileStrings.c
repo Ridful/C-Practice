@@ -32,6 +32,8 @@ int main() {
     char stringBuffer[BUFSIZ];
     size_t strIndex = 0;
 
+    int foundMatch = 0;
+
     int c;
     while ((c = fgetc(fp)) != EOF) {
         if (isprint(c)) { //check if c is printable
@@ -42,15 +44,35 @@ int main() {
             if (strIndex >= MIN_STRING_LENGTH) {
                 stringBuffer[strIndex] = '\0';
                 printf("%s\n", stringBuffer);
+
+                // Check for the target strings
+                if (strstr(stringBuffer, "GetProcAddress") ||
+                    strstr(stringBuffer, "VirtualAllocEx") ||
+                    strstr(stringBuffer, "hello world")) {
+                    printf(">>> Match found: \"%s\"\n", stringBuffer);
+                    foundMatch = 1;
+                }
             }
             strIndex = 0;
         }
     }
 
+    // Final string after EOF
     if (strIndex >= MIN_STRING_LENGTH) {
         stringBuffer[strIndex] = '\0';
         printf("%s\n", stringBuffer);
+        if (strstr(stringBuffer, "GetProcAddress") ||
+            strstr(stringBuffer, "VirtualAllocEx") ||
+            strstr(stringBuffer, "hello world")) {
+            printf("> Match found: \"%s\"\n", stringBuffer);
+            foundMatch = 1;
+        }
     }
+
+    if (!foundMatch) {
+        printf("No matches for target strings were found.\n");
+    }
+
     fclose(fp);
 
     return 0;
