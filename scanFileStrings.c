@@ -6,6 +6,24 @@
 
 #define MIN_STRING_LENGTH 4
 
+const char *targets[] = {
+    "GetProcAddress",
+    "VirtualAllocEx",
+    "hello world",
+};
+
+const size_t NUM_TARGETS = sizeof(targets) / sizeof(targets[0]);
+
+int check_for_targets(const char *str) {
+    for (size_t i = 0; i < NUM_TARGETS; ++i) {
+        if (strstr(str, targets[i]) != NULL) {
+            printf("> Match found: \"%s\" (target: \"%s\")\n", str, targets[i]);
+            return 1;
+        }
+    }
+    return 0;
+}
+
 int main() {
 
     char filepath[1024];
@@ -46,10 +64,7 @@ int main() {
                 printf("%s\n", stringBuffer);
 
                 // Check for the target strings
-                if (strstr(stringBuffer, "GetProcAddress") ||
-                    strstr(stringBuffer, "VirtualAllocEx") ||
-                    strstr(stringBuffer, "hello world")) {
-                    printf(">>> Match found: \"%s\"\n", stringBuffer);
+                if (check_for_targets(stringBuffer)) {
                     foundMatch = 1;
                 }
             }
@@ -61,10 +76,7 @@ int main() {
     if (strIndex >= MIN_STRING_LENGTH) {
         stringBuffer[strIndex] = '\0';
         printf("%s\n", stringBuffer);
-        if (strstr(stringBuffer, "GetProcAddress") ||
-            strstr(stringBuffer, "VirtualAllocEx") ||
-            strstr(stringBuffer, "hello world")) {
-            printf("> Match found: \"%s\"\n", stringBuffer);
+        if (check_for_targets(stringBuffer)) {
             foundMatch = 1;
         }
     }
